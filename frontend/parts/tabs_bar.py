@@ -13,12 +13,14 @@ class TabsBar(QtWidgets.QFrame):
     def __init__(
         self,
         father,
+        page_switcher
     ):
         super().__init__()
         with Timer(__class__.__name__):
             self.logger = Logger()
             self.father = father
             self.utils = Utils()
+            self.page_switcher = page_switcher
 
             self.setWindowFlags(QtCore.Qt.FramelessWindowHint) # type: ignore
             self.setGeometry(QtCore.QRect(0, 50, 1411, 61))
@@ -34,7 +36,13 @@ class TabsBar(QtWidgets.QFrame):
             self.discord_button = self.create_push_button(1240, 0, 141, 61, "Discord", 14, "discord", True)
 
             self.last_button = None
-            self.choose_button(self.device_monitor_button)
+
+            self.device_monitor_button.clicked.connect(lambda: self.handle_button_click(self.device_monitor_button, "device_monitor"))
+            self.settings_button.clicked.connect(lambda: self.handle_button_click(self.settings_button, "settings"))
+
+    def handle_button_click(self, button, page_name):
+        self.choose_button(button)
+        self.page_switcher(page_name)
 
     def create_push_button(
         self,
@@ -76,7 +84,6 @@ class TabsBar(QtWidgets.QFrame):
         else:
             button.setStyleSheet(stylsheet)
 
-        button.clicked.connect(lambda: self.choose_button(button))
         return button
 
     def choose_button(self, button: QtWidgets.QPushButton):

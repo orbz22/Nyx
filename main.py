@@ -7,6 +7,7 @@ from backend.error_dumper import ErrorDumper
 from backend.utils import Utils
 from backend.nyx_base import NyxBase
 from backend.timer import Timer
+from backend.settings import Settings
 from frontend.nyx import Nyx
 
 # Ensure high DPI scaling attributes are set before creating QApplication
@@ -38,6 +39,7 @@ class AppRunner:
             self.logger = Logger()
             self.utils = Utils()
             self.nyx_base = NyxBase()
+            self.settings = Settings()
             self.nyx_path, self.error_logs_path = self.utils.create_nyx_folders()
             self.error_dumper = ErrorDumper(self.error_logs_path)
             # Set the custom excepthook
@@ -143,7 +145,7 @@ class AppRunner:
             self.logger.debug(f"Default scale factor: {self.scale_factor}, Exception: {e}")
 
         self.main_window = QtWidgets.QMainWindow()
-        ui = Nyx(self.app, self.scale_factor)
+        ui = Nyx(self.app, self.scale_factor, self.settings)
         ui.setupUi(self.main_window)
         self.main_window.setWindowTitle("Nyx")
         self.main_window.show()
@@ -158,8 +160,11 @@ class AppRunner:
         sys.exit(self.app.exec())
 
     def close_event(self, event):
-        event.ignore()
-        self.hide_window()
+        if self.settings.get('minimize_to_tray'):
+            event.ignore()
+            self.hide_window()
+        else:
+            self.exit_app()
 
     def change_event(self, event):
         if event.type() == QtCore.QEvent.WindowStateChange:
