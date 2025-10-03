@@ -38,7 +38,7 @@ and more!
 - [ ] Fans information and controlling
 - [ ] RGB control
 - [ ] Overclocking
-- [ ] Settings page
+- [x] Settings page
 
 ## Installation
 You can either run directly from source or download the latest release from the releases page.
