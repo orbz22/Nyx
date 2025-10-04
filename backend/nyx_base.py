@@ -260,15 +260,58 @@ class NyxBase:
         
         Returns:
         ----------
-        str:
-            Power plan."""
+        tuple:
+            A tuple containing the power plan name and GUID."""
         try:
-            power_plan = os.popen('powercfg /getactivescheme').read().strip()
-            power_plan = power_plan[power_plan.find("(") + 1:power_plan.find(")")]
-            return power_plan
+            power_plan_output = os.popen('powercfg /getactivescheme').read().strip()
+            guid_start = power_plan_output.find(':') + 2
+            guid_end = power_plan_output.find(' ', guid_start)
+            guid = power_plan_output[guid_start:guid_end]
+            
+            name_start = power_plan_output.find('(') + 1
+            name_end = power_plan_output.find(')')
+            name = power_plan_output[name_start:name_end]
+            return name, guid
         except Exception as e:
             self.logger.error(f"An error occurred while retrieving power plan: {e}")
-            return "N/A"
+            return "N/A", ""
+
+    def get_power_plans(self):
+        """Get all power plans using os.popen command.
+
+        Returns:
+        ----------
+        dict:
+            A dictionary of power plans with their GUIDs as keys and names as values."""
+        try:
+            power_plans_output = os.popen('powercfg /list').read().strip()
+            power_plans = {}
+            for line in power_plans_output.split('\n'):
+                if "Power Scheme GUID:" in line:
+                    guid_start = line.find(':') + 2
+                    guid_end = line.find(' ', guid_start)
+                    guid = line[guid_start:guid_end]
+                    
+                    name_start = line.find('(') + 1
+                    name_end = line.find(')')
+                    name = line[name_start:name_end]
+                    power_plans[name] = guid
+            return power_plans
+        except Exception as e:
+            self.logger.error(f"An error occurred while retrieving power plans: {e}")
+            return {}
+
+    def set_power_plan(self, guid: str):
+        """Set power plan using os.popen command.
+
+        Parameters:
+        ----------
+        guid: str
+            Power plan GUID."""
+        try:
+            os.popen(f'powercfg /setactive {guid}')
+        except Exception as e:
+            self.logger.error(f"An error occurred while setting power plan: {e}")
         
     def get_network_speed(self, interface: str):
         """Get network speed using psutil.net_io_counters().

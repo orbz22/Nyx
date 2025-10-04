@@ -159,7 +159,7 @@ class DeviceMonitor(QtWidgets.QFrame):
             lan_upload_info_row = self.create_info_row("LAN (Upload)", "? Bytes/s", function = lambda: f"{self.nyx_base.get_network_speed('Ethernet').upload_labelized}", timer_interval = 250)
             gpu_clock_info_row = self.create_info_row("GPU Clock", "? MHz", function = lambda: f"{self.nyx_base.get_gpu_clock()} MHZ", timer_interval = 10000)
             vram_clock_info_row = self.create_info_row("VRAM Clock", "? MHz", function = lambda: f"{int(self.nyx_base.get_ram_info().clock)} MHZ", timer_interval = 10000)
-            power_plan_info_row = self.create_info_row("Power Plan", "Loading", function = self.nyx_base.get_power_plan)
+            power_plan_info_row = self.create_info_row("Power Plan", "Loading", function = lambda: self.nyx_base.get_power_plan()[0])
 
             # Adding the content frame to the layout
             self.vertical_layout.addWidget(self.scrollable_content_frame)

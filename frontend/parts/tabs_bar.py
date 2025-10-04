@@ -38,6 +38,7 @@ class TabsBar(QtWidgets.QFrame):
             self.last_button = None
 
             self.device_monitor_button.clicked.connect(lambda: self.handle_button_click(self.device_monitor_button, "device_monitor"))
+            self.gaming_mode_button.clicked.connect(lambda: self.handle_button_click(self.gaming_mode_button, "gaming_mode"))
             self.settings_button.clicked.connect(lambda: self.handle_button_click(self.settings_button, "settings"))
 
     def handle_button_click(self, button, page_name):

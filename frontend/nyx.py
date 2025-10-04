@@ -4,6 +4,7 @@ from .parts.title_bar import TitleBar
 from .parts.tabs_bar import TabsBar
 from .pages.device_monitor import DeviceMonitor
 from .pages.settings_page import SettingsPage
+from .pages.gaming_mode_page import GamingModePage
 
 from backend.logger import Logger
 from backend.timer import Timer
@@ -42,6 +43,7 @@ class Nyx(object):
 
             self.device_monitor_body = DeviceMonitor(self.centralwidget)
             self.settings_page = SettingsPage(self.centralwidget, self.settings)
+            self.gaming_mode_page = GamingModePage(self.centralwidget)
 
             self.switch_page("device_monitor")
             self.tabs_bar.choose_button(self.tabs_bar.device_monitor_button)
@@ -57,9 +59,15 @@ class Nyx(object):
         if page_name == "device_monitor":
             self.device_monitor_body.show()
             self.settings_page.hide()
+            self.gaming_mode_page.hide()
         elif page_name == "settings":
             self.device_monitor_body.hide()
             self.settings_page.show()
+            self.gaming_mode_page.hide()
+        elif page_name == "gaming_mode":
+            self.device_monitor_body.hide()
+            self.settings_page.hide()
+            self.gaming_mode_page.show()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
